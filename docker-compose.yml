@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  spiral-render:
+    build: .
+    container_name: spiral-render
+    ports:
+      - "8420:8420"
+    environment:
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - ELEVENLABS_VOICE_ID=${ELEVENLABS_VOICE_ID:-uaXmxAsXACgEChuJxq9s}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - render_output:/app/workspace/output
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+
+volumes:
+  render_output:
