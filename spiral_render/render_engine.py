@@ -1,5 +1,5 @@
 """
-Spiral Studios Ã¢ÂÂ Main Render Engine
+Spiral Studios ÃÂ¢ÃÂÃÂ Main Render Engine
 
 Takes a video script JSON and produces a complete video with:
 - Multiple scenes with stock footage
@@ -154,7 +154,7 @@ class RenderEngine:
             dur = scene["duration_seconds"]
             clip_path = self._prepare_scene_clips(sid, dur)
             scene_inputs.append((sid, clip_path, dur))
-            logger.info(f"  Scene {sid}: {dur}s Ã¢ÂÂ {os.path.basename(clip_path)}")
+            logger.info(f"  Scene {sid}: {dur}s ÃÂ¢ÃÂÃÂ {os.path.basename(clip_path)}")
 
         # === Step 2: Build filtergraph ===
         builder = FilterGraphBuilder(self.width, self.height, self.fps)
@@ -225,7 +225,7 @@ class RenderEngine:
         cmd = [
             config.FFMPEG_BIN, "-y",
             *input_args,
-            "-/filter_complex", fg_file,
+            "-filter_complex_script", fg_file,
             "-map", f"[{final_video}]",
             *audio_map,
             "-c:v", config.DEFAULT_CODEC,
