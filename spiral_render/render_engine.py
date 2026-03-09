@@ -1,5 +1,5 @@
 """
-Spiral Studios ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Main Render Engine
+Spiral Studios - Main Render Engine
 
 Takes a video script JSON and produces a complete video with:
 - Multiple scenes with stock footage
