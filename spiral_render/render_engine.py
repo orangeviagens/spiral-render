@@ -217,6 +217,15 @@ class RenderEngine:
         logger.info(f"Filtergraph: {len(filtergraph)} chars, {len(builder.filters)} filters")
 
         # === Step 5: Run FFmpeg ===
+        # Build audio codec args only if we have audio
+        audio_codec_args = []
+        if "-an" not in audio_map:
+            audio_codec_args = [
+                "-c:a", config.DEFAULT_AUDIO_CODEC,
+                "-b:a", config.DEFAULT_AUDIO_BITRATE,
+                "-shortest",
+            ]
+
         cmd = [
             config.FFMPEG_BIN, "-y",
             *input_args,
@@ -227,10 +236,8 @@ class RenderEngine:
             "-preset", self.preset,
             "-crf", str(self.crf),
             "-pix_fmt", config.DEFAULT_PIXEL_FORMAT,
-            "-c:a", config.DEFAULT_AUDIO_CODEC,
-            "-b:a", config.DEFAULT_AUDIO_BITRATE,
+            *audio_codec_args,
             "-movflags", "+faststart",
-            "-shortest",
             self.output_path
         ]
 
