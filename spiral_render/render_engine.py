@@ -193,16 +193,12 @@ class RenderEngine:
 
         # Add narration audio
         audio_map = []
-        if self.narration_path and os.path.exists(self.narration_path):
+        if self.narration_path and os.path.exists(self.narration_path) and os.path.getsize(self.narration_path) > 100:
             narration_idx = len(scene_inputs)
             input_args.extend(["-i", self.narration_path])
-
-            # Normalize narration audio
-            norm_label = builder._label("an")
-            builder.filters.append(
-                build_audio_mix_filter(f"{narration_idx}:a", norm_label)
-            )
-            audio_map = ["-map", f"[{norm_label}]"]
+            # Map audio directly (skip loudnorm filter to avoid stream issues)
+            audio_map = ["-map", f"{narration_idx}:a"]
+            logger.info(f"  Narration: {self.narration_path} ({os.path.getsize(self.narration_path)} bytes)")
         else:
             # Silent audio
             audio_map = ["-an"]
@@ -242,7 +238,12 @@ class RenderEngine:
         ]
 
         logger.info(f"Running FFmpeg...")
-        logger.info(f"Command: {' '.join(cmd[:6])}... [{len(cmd)} args]")
+        logger.info(f"Full command: {' '.join(cmd)}")
+        logger.info(f"Filtergraph file: {fg_file}")
+        # Log filtergraph content for debugging
+        with open(fg_file, 'r') as _fg:
+            fg_content = _fg.read()
+            logger.info(f"Filtergraph ({len(fg_content)} chars): {fg_content[:500]}")
 
         result = subprocess.run(
             cmd,
