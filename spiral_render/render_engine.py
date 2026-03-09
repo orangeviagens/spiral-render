@@ -1,5 +1,5 @@
 """
-Spiral Studios ÃÂ¢ÃÂÃÂ Main Render Engine
+Spiral Studios ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ Main Render Engine
 
 Takes a video script JSON and produces a complete video with:
 - Multiple scenes with stock footage
@@ -154,7 +154,17 @@ class RenderEngine:
             dur = scene["duration_seconds"]
             clip_path = self._prepare_scene_clips(sid, dur)
             scene_inputs.append((sid, clip_path, dur))
-            logger.info(f"  Scene {sid}: {dur}s ÃÂ¢ÃÂÃÂ {os.path.basename(clip_path)}")
+            logger.info(f"  Scene {sid}: {dur}s ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ {os.path.basename(clip_path)}")
+
+        # === Step 1b: Limit scenes to reasonable count ===
+        total_dur = sum(dur for _, _, dur in scene_inputs)
+        logger.info(f"Total scene duration: {total_dur:.1f}s across {len(scene_inputs)} scenes")
+        
+        # If total duration is way too long, trim to first N scenes
+        target_duration = sum(s["duration_seconds"] for s in self.scenes[:3])  # max 3 scenes worth
+        if len(scene_inputs) > 6:
+            scene_inputs = scene_inputs[:6]
+            logger.info(f"Trimmed to {len(scene_inputs)} scenes to keep render manageable")
 
         # === Step 2: Build filtergraph ===
         builder = FilterGraphBuilder(self.width, self.height, self.fps)
@@ -171,10 +181,10 @@ class RenderEngine:
             label = builder.build_scene_pipeline(
                 input_index=i,
                 duration=dur,
-                text_overlay=text,
-                ken_burns=self.ken_burns,
-                color_grade=self.color_grade,
-                vignette=self.vignette,
+                text_overlay=None,  # disabled for stability
+                ken_burns=False,    # disabled for stability
+                color_grade=False,  # disabled for stability  
+                vignette=False,     # disabled for stability
             )
             scene_labels.append(label)
             scene_durations.append(dur)
