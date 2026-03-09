@@ -1,6 +1,6 @@
 import os
 """
-Spiral Studios Ã¢ÂÂ FFmpeg Effects & Filter Graph Builder
+Spiral Studios ------------ FFmpeg Effects & Filter Graph Builder
 
 Builds complex FFmpeg filtergraphs for cinematic travel video production.
 Supports: Ken Burns zoom, crossfades, text overlays, color grading, vignette.
@@ -81,7 +81,7 @@ def build_text_overlay_filter(
         # Resolve font
     font_file = font_file or _get_available_font()
     if not font_file:
-        # No font available Ã¢ÂÂ pass through without text
+        # No font available ------------ pass through without text
         return f"[{input_label}]null[{output_label}]"
 
     escaped_text = (
@@ -244,7 +244,7 @@ class FilterGraphBuilder:
     ) -> str:
         """
         Build complete filter chain for a single scene:
-        input Ã¢ÂÂ scale Ã¢ÂÂ ken_burns Ã¢ÂÂ color_grade Ã¢ÂÂ vignette Ã¢ÂÂ fade Ã¢ÂÂ text Ã¢ÂÂ output
+        input ------------ scale ------------ ken_burns ------------ color_grade ------------ vignette ------------ fade ------------ text ------------ output
         """
         current = f"{input_index}:v"
 
