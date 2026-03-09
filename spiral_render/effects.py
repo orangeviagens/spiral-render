@@ -78,7 +78,7 @@ def build_text_overlay_filter(
     Text appears centered horizontally, positioned at y_position.
     """
     # Escape special characters for FFmpeg drawtext
-        # Resolve font
+    # Resolve font
     font_file = font_file or _get_available_font()
     if not font_file:
         # No font available ------------ pass through without text
