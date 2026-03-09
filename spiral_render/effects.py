@@ -1,3 +1,4 @@
+import os
 """
 Spiral Studios — FFmpeg Effects & Filter Graph Builder
 
@@ -40,6 +41,23 @@ def build_ken_burns_filter(
     )
 
 
+def _get_available_font(preferred: str = config.FONT_BOLD) -> str:
+    """Return preferred font path or a fallback that exists."""
+    candidates = [
+        preferred,
+        config.FONT_BOLD,
+        config.FONT_REGULAR,
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+    ]
+    for f in candidates:
+        if os.path.exists(f):
+            return f
+    return ""  # empty = skip text overlay
+
+
 def build_text_overlay_filter(
     input_label: str,
     output_label: str,
@@ -47,7 +65,7 @@ def build_text_overlay_filter(
     start_time: float,
     end_time: float,
     font_size: int = config.TEXT_FONT_SIZE,
-    font_file: str = config.FONT_BOLD,
+    font_file: str = "",
     color: str = config.TEXT_COLOR,
     border_w: int = config.TEXT_BORDER_WIDTH,
     border_color: str = config.TEXT_BORDER_COLOR,
@@ -60,6 +78,12 @@ def build_text_overlay_filter(
     Text appears centered horizontally, positioned at y_position.
     """
     # Escape special characters for FFmpeg drawtext
+        # Resolve font
+    font_file = font_file or _get_available_font()
+    if not font_file:
+        # No font available — pass through without text
+        return f"[{input_label}]null[{output_label}]"
+
     escaped_text = (
         text.replace("\\", "\\\\")
         .replace("'", "\\'")
